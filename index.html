@@ -129,8 +129,8 @@
 
     function changeClass() {
         const header = document.getElementById('main-header');
-        header.classList.remove('green'); // jeśli by miał
-        header.classList.add('anotherclass'); // nie istnieje, ale możesz ją zdefiniować w CSS
+        header.classList.remove('green');
+        header.classList.add('anotherclass');
         alert('Zmieniono klasy CSS nagłówka.');
     }
 
@@ -222,7 +222,7 @@
         const now = new Date();
         const timestampInMilliseconds = now.getTime();
 
-        const formatted = now.toLocaleString('pl-PL'); // Format: 15.04.2025, 12:34:56
+        const formatted = now.toLocaleString('pl-PL');
 
         document.getElementById('dateDisplay').innerHTML = `Aktualna data i czas: ${formatted}<br>Timestamp (ms): ${timestampInMilliseconds}`;
     }
