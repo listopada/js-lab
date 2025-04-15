@@ -4,18 +4,35 @@
     <title>JS Lab</title>
     <style>
         body {
-            margin: 0;
+            margin: 20px;
             padding: 0;
-            font-family: Arial, serif;
+            font-family: Arial, sans-serif;
         }
 
         h1 {
             color: #0B3954;
         }
+
         .green {
             color: darkgreen;
         }
 
+        .boring {
+            color: grey;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .visible {
+            display: block;
+        }
+
+        .anotherclass {
+            color: crimson;
+            font-style: italic;
+        }
     </style>
 </head>
 <body>
@@ -29,12 +46,39 @@
         <li id="super-important">Zaimplementować</li>
     </ol>
 
-    <input type="text" id="myTextField" placeholder="Wpisz coś...">
+    <h2>Funkcja odczytywania wartości z pola</h2>
+    <input type="text" id="myTextField" placeholder="Wpisz tutaj coś">
     <input type="checkbox" id="myCheckbox"> Zgadzam się
     <button type="button" onclick="readValues()">Odczytaj wartości</button>
 
 </div>
-</div>
+
+<h2>Dodatkowe funkcje</h2>
+<!--<button type="button" onclick="removeBoringStuff()">Usuń nudne rzeczy</button>-->
+<button type="button" onmouseover="removeBoringStuff()">Usuń nudne rzeczy</button>
+<button type="button" onclick="changeClass()">Zmień klasy CSS</button>
+<button type="button" onclick="toggleVisibleIfLessThan10()">Warunkowe widoczność (i < 10)</button>
+<button type="button" onclick="checkClass()">Sprawdź klasę 'foo'</button>
+<button type="button" onclick="toggleVisibility()">Pokaż/Ukryj element</button>
+
+<h2>Opźniona funkcja i anulowanie opóźnionej funkcji</h2>
+<button type="button" onclick="startTimer()">Start timer</button>
+<button type="button" onclick="cancelTimer()">Anuluj timer</button>
+
+<h2>Cykliczne wykonywanie kodu</h2>
+<button type="button" onclick="startToggleCycle()">Start ukrywania/pokazywania</button>
+<button type="button" onclick="stopToggleCycle()">Stop ukrywania/pokazywania</button>
+
+<h2>Gra: Zgadnij liczbę 1-10</h2>
+<input type="number" id="guessInput" placeholder="Zgadnij liczbę 1-10">
+<button onclick="checkGuess()">Sprawdź</button>
+<button onclick="startNewGame()">Nowa gra</button>
+<p id="gameMessage"></p>
+
+<h2>Data i czas</h2>
+<button onclick="showCurrentDate()">Pokaż datę i timestamp</button>
+<p id="dateDisplay"></p>
+
 <script>
     // const header = document.getElementById('main-header');
     // header.innerText = "Inny header";
@@ -45,33 +89,144 @@
     //     element.classList.remove('boring');
     // });
 
-    function readValues() {
-        const textFieldValue = document.getElementById('myTextField').value;
-        const checkboxChecked = document.getElementById('myCheckbox').checked;
-
-        if (checkboxChecked) {
-            alert('Wartość z pola tekstowego: ' + textFieldValue);
-        } else {
-            alert('Musisz zaznaczyć checkbox, aby odczytać wartość.');
-        }
-    }
-
     let div = document.createElement('div');
     div.classList.add('green');
     div.innerText = 'Zielony tekst (jeśli dodasz CSS)';
     document.getElementById('app').append(div);
 
     let listItem = document.createElement('li');
+    listItem.classList.add('anotherclass');
     listItem.innerText = 'Zagrać';
     document.querySelector("#app ol li:last-child").after(listItem);
+
+    function readValues() {
+        const textFieldValue = document.getElementById('myTextField').value;
+        const checkboxChecked = document.getElementById('myCheckbox').checked;
+
+        if (checkboxChecked) {
+            setTimeout(() => {
+                alert('Wartość z pola tekstowego: ' + textFieldValue);
+                document.getElementById('myTextField').value = '';
+            },3000);
+        } else {
+            alert('Musisz zaznaczyć checkbox, aby odczytać wartość.');
+        }
+    }
 
     // document.querySelectorAll("#app .boring").forEach((e) => e.remove());
 
     function removeBoringStuff() {
-        document.querySelectorAll("#app .boring").forEach((e) => e.remove());
+        document.querySelectorAll("#app .boring").forEach((e) => {
+            e.classList.remove('boring');
+            e.classList.add('hidden');
+        });
+    }
+
+    function toggleVisibility() {
+        const element = document.getElementById('main-header');
+        element.classList.toggle('hidden');
+    }
+
+    function changeClass() {
+        const header = document.getElementById('main-header');
+        header.classList.remove('green'); // jeśli by miał
+        header.classList.add('anotherclass'); // nie istnieje, ale możesz ją zdefiniować w CSS
+        alert('Zmieniono klasy CSS nagłówka.');
+    }
+
+    function toggleVisibleIfLessThan10() {
+        const element = document.getElementById('main-header');
+        let i = Math.floor(Math.random() * 20);
+
+        if (i < 10) {
+            element.classList.remove("hidden");
+        } else {
+            element.classList.add("hidden");
+        }
+
+        alert(`Wylosowano: ${i}, widoczność: ${!element.classList.contains('hidden')}`);
+    }
+
+    function checkClass() {
+        const element = document.getElementById('main-header');
+        const hasFoo = element.classList.contains("foo");
+        alert(`Czy nagłówek ma klasę 'foo'? ${hasFoo}`);
+    }
+
+    let myTimeoutId;
+
+    function startTimer() {
+        myTimeoutId = setTimeout(() => {
+            alert("Minęło 5 sekund!");
+        }, 5000);
+    }
+
+    function cancelTimer() {
+        clearTimeout(myTimeoutId);
+        alert("Timer został anulowany.");
+    }
+
+    let toggleIntervalId;
+
+    function startToggleCycle() {
+        if (!toggleIntervalId) {
+            toggleIntervalId = setInterval(() => {
+                toggleVisibility();
+            }, 1500);
+            alert("Zaczęto cykliczne ukrywanie/pokazywanie.");
+        } else {
+            alert("Cykliczne działanie już trwa.");
+        }
+    }
+
+    function stopToggleCycle() {
+        if (toggleIntervalId) {
+            clearInterval(toggleIntervalId);
+            toggleIntervalId = null;
+            alert("Zatrzymano cykliczne ukrywanie/pokazywanie.");
+        } else {
+            alert("Brak aktywnego cyklu.");
+        }
+    }
+
+    let secretNumber = Math.floor(Math.random() * 10) + 1;
+
+    function checkGuess() {
+        const guess = parseInt(document.getElementById('guessInput').value, 10);
+        const message = document.getElementById('gameMessage');
+
+        if (isNaN(guess) || guess < 1 || guess > 10) {
+            message.innerText = "Podaj liczbę od 1 do 10.";
+            message.style.color = "orange";
+            return;
+        }
+
+        if (guess === secretNumber) {
+            message.innerText = "Brawo! Zgadłeś!";
+            message.style.color = "green";
+        } else {
+            message.innerText = "Nie tym razem. Spróbuj ponownie.";
+            message.style.color = "red";
+        }
+    }
+
+    function startNewGame() {
+        secretNumber = Math.floor(Math.random() * 10) + 1;
+        document.getElementById('guessInput').value = '';
+        const message = document.getElementById('gameMessage');
+        message.innerText = "Nowa gra rozpoczęta. Zgadnij liczbę!";
+        message.style.color = "blue";
+    }
+
+    function showCurrentDate() {
+        const now = new Date();
+        const timestampInMilliseconds = now.getTime();
+
+        const formatted = now.toLocaleString('pl-PL'); // Format: 15.04.2025, 12:34:56
+
+        document.getElementById('dateDisplay').innerHTML = `Aktualna data i czas: ${formatted}<br>Timestamp (ms): ${timestampInMilliseconds}`;
     }
 
 </script>
 </body>
-    <button type="button" onclick="removeBoringStuff()">Usuń nudne rzeczy</button>
 </html>
